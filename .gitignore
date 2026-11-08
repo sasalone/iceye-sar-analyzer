@@ -1,0 +1,16 @@
+# Python-välimuisti
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Paikalliset SAR-kuvat ja datavälimuisti
+data/
+*.tif
+*.tiff
+*.png
+*.jpg
+
+# Ympäristö- ja editoritiedostot
+.env
+.vscode/
+.ipynb_checkpoints/

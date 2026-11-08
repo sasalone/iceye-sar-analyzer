@@ -1,0 +1,8 @@
+[MAIN]
+extension-pkg-allow-list=cv2,rasterio,numpy
+
+[TYPECHECK]
+generated-members=cv2.*,numpy.*,rasterio.*
+
+[FORMAT]
+max-line-length=100
