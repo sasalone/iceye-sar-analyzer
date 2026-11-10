@@ -4,6 +4,7 @@ import os
 import cv2
 from src.fetcher import get_or_create_roi
 from src.detector import detect_and_segment_ship, render_segmented_ship
+from src.annotator import get_or_create_wake_annotation
 
 STAC_URL = (
     "https://iceye-open-data-catalog.s3.amazonaws.com/"
@@ -12,7 +13,7 @@ STAC_URL = (
 
 
 def main():
-    """Suorittaa kuvan haun (Moduuli 1) ja aluksen segmentoinnin (Moduuli 2)."""
+    """Suorittaa vaiheet 1-3: haku, laivan segmentointi ja perävanan piirto."""
     print("=== VAIHE 1: KUVAN JA METATIETOJEN HAKU (FETCHER) ===")
     roi_img, meta = get_or_create_roi(STAC_URL, force_reload=False)
 
@@ -20,23 +21,20 @@ def main():
     ship_data = detect_and_segment_ship(
         roi_img, pixel_res_m=meta["effective_pixel_m"]
     )
-
     print(f"  Laivan keskipiste (px) : {ship_data['center_xy']}")
-    print(f"  Arvioitu pituus        : {ship_data['length_m']} m")
-    print(f"  Arvioitu leveys        : {ship_data['width_m']} m")
-    print(f"  Tutkapinta-ala (RCS)   : {ship_data['area_m2']} m²")
+    print(f"  Arvioitu koko          : {ship_data['length_m']}m x {ship_data['width_m']}m")
 
     segmented_img = render_segmented_ship(roi_img, ship_data)
-    out_path = os.path.join("data", "step2_segmented_ship.png")
-    cv2.imwrite(out_path, segmented_img)
-    print(f"[Detector] Tallennettu väritetty laivakuva -> {out_path}")
+    cv2.imwrite(os.path.join("data", "step2_segmented_ship.png"), segmented_img)
 
-    win_name = "Moduuli 2 (Detector): Tunnistettu ja varitetty laiva (Paina ENTER sulkeaksesi)"
-    cv2.namedWindow(win_name, cv2.WINDOW_NORMAL)
-    cv2.resizeWindow(win_name, 700, 700)
-    cv2.imshow(win_name, segmented_img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    print("\n=== VAIHE 4: PERÄVANAN MERKITSEMINEN (ANNOTATOR) ===")
+    # Aseta force_reannotate=True, jos haluat piirtää perävanan uudelleen
+    wake_data = get_or_create_wake_annotation(
+        segmented_img, ship_data, force_reannotate=False
+    )
+
+    print(f"  Perävanan kärki (px)   : {wake_data['apex_xy']}")
+    print(f"  Perävanan häntä (px)   : {wake_data['tail_xy']}")
 
 
 if __name__ == "__main__":
