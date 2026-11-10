@@ -5,6 +5,7 @@ import cv2
 from src.fetcher import get_or_create_roi
 from src.detector import detect_and_segment_ship, render_segmented_ship
 from src.annotator import get_or_create_wake_annotation
+from src.physics import calculate_vessel_kinematics, save_kinematics_report
 
 STAC_URL = (
     "https://iceye-open-data-catalog.s3.amazonaws.com/"
@@ -13,7 +14,7 @@ STAC_URL = (
 
 
 def main():
-    """Suorittaa vaiheet 1-3: haku, laivan segmentointi ja perävanan piirto."""
+    """Suorittaa vaiheet 1-5: haku, segmentointi, perävana ja fysiikka."""
     print("=== VAIHE 1: KUVAN JA METATIETOJEN HAKU (FETCHER) ===")
     roi_img, meta = get_or_create_roi(STAC_URL, force_reload=False)
 
@@ -28,13 +29,21 @@ def main():
     cv2.imwrite(os.path.join("data", "step2_segmented_ship.png"), segmented_img)
 
     print("\n=== VAIHE 4: PERÄVANAN MERKITSEMINEN (ANNOTATOR) ===")
-    # Aseta force_reannotate=True, jos haluat piirtää perävanan uudelleen
     wake_data = get_or_create_wake_annotation(
         segmented_img, ship_data, force_reannotate=False
     )
 
-    print(f"  Perävanan kärki (px)   : {wake_data['apex_xy']}")
-    print(f"  Perävanan häntä (px)   : {wake_data['tail_xy']}")
+    print("\n=== VAIHE 5: DOPPLER-FYSIIKKA JA KINEMATIIKKA (PHYSICS) ===")
+    kinematics = calculate_vessel_kinematics(meta, ship_data, wake_data)
+    report_path = save_kinematics_report(kinematics)
+
+    print(f"  Kuvaustila (Mode)      : {kinematics['imaging_mode']}")
+    print(f"  Etäisyys (Slant Range) : {kinematics['slant_range_km']} km")
+    print(f"  Atsimuuttisiirtymä     : {kinematics['azimuth_shift_m']} m ({kinematics['azimuth_shift_px']} px)")
+    print(f"  Säteittäinen nopeus Vr : {kinematics['radial_velocity_ms']} m/s")
+    print(f"  Kulkusuunta (Heading)  : {kinematics['heading_deg']}°")
+    print(f"  ARVIOITU NOPEUS        : {kinematics['speed_knots']} solmua ({kinematics['speed_kmh']} km/h)")
+    print(f"[Physics] Tallennettu laskentaraportti -> {report_path}")
 
 
 if __name__ == "__main__":
