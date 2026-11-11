@@ -103,7 +103,7 @@ def render_segmented_ship(
     """
     _ = roi_gray
     upscaled = ship_data["upscaled_gray"]
-    new_h, new_w = upscaled.shape[:2]
+    new_w = upscaled.shape[1]
 
     canvas = cv2.cvtColor(upscaled, cv2.COLOR_GRAY2BGR)
     overlay = canvas.copy()

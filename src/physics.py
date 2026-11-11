@@ -34,7 +34,7 @@ def calculate_vessel_kinematics(
     vec_x = apex_x - tail_x
     vec_y = apex_y - tail_y
 
-    # Kompassisuunta asteina 
+    # Kompassisuunta asteina
     heading_rad = math.atan2(vec_x, -vec_y)
     heading_deg = (math.degrees(heading_rad) + 360.0) % 360.0
 
