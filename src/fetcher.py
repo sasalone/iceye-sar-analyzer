@@ -34,8 +34,8 @@ def fetch_stac_metadata(stac_url: str) -> dict:
         "incidence_angle_deg": float(inc_angle),
         "pixel_spacing_m": float(pixel_spacing),
         "orbit_state": props.get("sat:orbit_state", "unknown"),
-        "sat_altitude_m": 530000.0, # Iceye-X38 korkeus 530km
-        "sat_velocity_ms": 7600.0, # Iceyey-X38 nopeus 7,6km/s
+        "sat_altitude_m": 530000.0, # Iceye-X31 korkeus 530km
+        "sat_velocity_ms": 7600.0, # Iceyey-X31 nopeus 7,6km/s
         "stac_url": stac_url,
         "preview_url": None,
         "tif_url": None,

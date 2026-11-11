@@ -14,3 +14,6 @@ data/
 .env
 .vscode/
 .ipynb_checkpoints/
+
+# Sallitaan dokumentaation esimerkkikuvat
+!assets/*.png
