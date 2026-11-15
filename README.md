@@ -1,6 +1,6 @@
 # SAR Dark Vessel Kinematics & Wake Analyzer
 
-Python-pohjainen analyysityökalu "pimeiden alusten" paikantamiseen, mittaamiseen sekä kulkusuunnan ja nopeuden määrittämiseen yhdestä X-kaistan SAR-satelliittikuvasta.
+Python-pohjainen analyysityökalu "pimeiden alusten" paikantamiseen, mittaamiseen sekä kulkusuunnan ja nopeuden määrittämiseen yhdestä X-kaistan SAR-satelliittikuvasta. Projekti on rakennettu tekoälyavusteisesti.
 
 ![Valmis SAR-analyysi](assets/final_sar_analysis.png)
 
